@@ -40,6 +40,8 @@
 #include "common/android.h"
 #elif defined(LOVE_LINUX)
 #include <spawn.h>
+#elif defined(LOVE_EMSCRIPTEN)
+#include <emscripten.h>
 #endif
 
 namespace love
@@ -65,6 +67,8 @@ std::string System::getOS() const
 	return "Android";
 #elif defined(LOVE_LINUX)
 	return "Linux";
+#elif defined(LOVE_EMSCRIPTEN)
+	return "Web";
 #else
 	return "Unknown";
 #endif
@@ -117,6 +121,13 @@ bool System::openURL(const std::string &url) const
 		// We can't tell what actually happens without waiting for
 		// the process to finish, which could take forever (literally).
 		return true;
+
+#elif defined(LOVE_EMSCRIPTEN)
+	EM_ASM_INT({
+		window.open(Module['Pointer_stringify']($0));
+		return 0;
+	}, url.c_str());
+	return true;
 
 #elif defined(LOVE_WINDOWS)
 

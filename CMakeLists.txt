@@ -315,6 +315,7 @@ set(LOVE_SRC_COMMON
 
 if (APPLE)
 	set(LOVE_SRC_COMMON ${LOVE_SRC_COMMON}
+		src/common/macosx.h
 		src/common/macosx.mm
 	)
 endif()
@@ -1760,12 +1761,36 @@ if(MSVC)
 	set_target_properties(${LOVE_LIB_NAME} PROPERTIES RELEASE_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
 	set_target_properties(${LOVE_LIB_NAME} PROPERTIES DEBUG_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
 endif()
+set_target_properties(${LOVE_LIB_NAME} PROPERTIES LINK_FLAGS "-s USE_PTHREADS")
+
+# very hacky TODO remove
+add_definitions("-s USE_PTHREADS")
 
 #
 # love (executable)
 #
-add_executable(${LOVE_EXE_NAME} WIN32 src/love.cpp ${LOVE_RC})
-target_link_libraries(${LOVE_EXE_NAME} ${LOVE_LIB_NAME})
+if(EMSCRIPTEN)	
+	add_executable(${LOVE_EXE_NAME} src/love.cpp)	
+	set(EMSCRIPTEN_ARGS	
+		"-s CASE_INSENSITIVE_FS=1" # I think this is probably what most users expect (sorry linuxers)	
+		"--post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts/EmscriptenPersistence.js"	
+		"-s USE_PTHREADS=1"
+		"-s PTHREAD_POOL_SIZE=2"	
+		"-s MODULARIZE=1"	
+		"-s EXPORT_NAME=\"'Love'\""	
+		"-s WASM=1"
+		"-s FULL_ES2=1"	
+		"-s DISABLE_EXCEPTION_CATCHING=0" # Might be worth building a whitelist for EXCEPTION_CATCHING_WHITELIST
+		"-s ALLOW_MEMORY_GROWTH=0 -s FORCE_FILESYSTEM=1"
+		"-lidbfs.js" # to fix the ReferenceError: IDBFS is not defined
+	)	
+	set_target_properties(${LOVE_EXE_NAME} PROPERTIES LINK_FLAGS "-s USE_PTHREADS")
+	target_link_libraries(${LOVE_EXE_NAME} ${LOVE_LIB_NAME} ${EMSCRIPTEN_ARGS})	
+	# set_property(TARGET ${LOVE_EXE_NAME} PROPERTY SUFFIX ".html")
+else()
+	add_executable(${LOVE_EXE_NAME} WIN32 src/love.cpp ${LOVE_RC})
+	target_link_libraries(${LOVE_EXE_NAME} ${LOVE_LIB_NAME})
+endif()
 
 if(MSVC)
 	add_executable(${LOVE_CONSOLE_EXE_NAME} src/love.cpp ${LOVE_RC})

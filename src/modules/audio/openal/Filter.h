@@ -34,9 +34,14 @@
 #include <OpenAL-Soft/alext.h>
 #endif
 #else
-#include <AL/alc.h>
-#include <AL/al.h>
-#include <AL/alext.h>
+#if LOVE_EMSCRIPTEN	
+#include <AL/alc.h>	
+#include <AL/al.h>	
+#else	
+#include <AL/alc.h>	
+#include <AL/al.h>	
+#include <AL/alext.h>	
+#endif
 #endif
 
 #include <vector>

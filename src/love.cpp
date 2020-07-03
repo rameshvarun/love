@@ -45,6 +45,10 @@ extern "C" {
 #include "common/ios.h"
 #endif
 
+#if LOVE_EMSCRIPTEN
+#include <emscripten.h>
+#endif
+
 #ifdef LOVE_WINDOWS
 extern "C"
 {
@@ -214,9 +218,22 @@ static DoneAction runlove(int argc, char **argv, int &retval)
 	// Turn the returned boot function into a coroutine and call it until done.
 	lua_newthread(L);
 	lua_pushvalue(L, -2);
-	int stackpos = lua_gettop(L);
-	while (love::luax_resume(L, 0) == LUA_YIELD)
-		lua_pop(L, lua_gettop(L) - stackpos);
+	#ifdef LOVE_EMSCRIPTEN
+		emscripten_set_main_loop_arg([](void *arg) {
+			lua_State *L = static_cast<lua_State *>(arg);
+			int stackpos = lua_gettop(L);
+
+			if (lua_resume(L, 0) == LUA_YIELD) {
+				lua_pop(L, lua_gettop(L) - stackpos);
+			} else {
+				emscripten_cancel_main_loop();
+			};
+		}, (void *)L, 0, 1);
+	#else
+		int stackpos = lua_gettop(L);
+		while (love::luax_resume(L, 0) == LUA_YIELD)
+			lua_pop(L, lua_gettop(L) - stackpos);
+	#endif
 
 	retval = 0;
 	DoneAction done = DONE_QUIT;
