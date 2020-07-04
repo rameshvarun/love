@@ -1781,7 +1781,8 @@ if(EMSCRIPTEN)
 		"-s WASM=1"
 		"-s FULL_ES2=1"	
 		"-s DISABLE_EXCEPTION_CATCHING=0" # Might be worth building a whitelist for EXCEPTION_CATCHING_WHITELIST
-		"-s ALLOW_MEMORY_GROWTH=0 -s FORCE_FILESYSTEM=1"
+		"-s ALLOW_MEMORY_GROWTH=1" # for dynamic resizing of memory, should not have a performance impact as using WASM
+		"-s FORCE_FILESYSTEM=1" # to fix Module.addDependency not existing
 		"-lidbfs.js" # to fix the ReferenceError: IDBFS is not defined
 	)	
 	set_target_properties(${LOVE_EXE_NAME} PROPERTIES LINK_FLAGS "-s USE_PTHREADS")

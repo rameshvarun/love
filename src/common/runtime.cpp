@@ -101,28 +101,41 @@ static lua_Number luax_computeloveobjectkey(lua_State *L, love::Object *object)
 {
 	// love objects should be allocated on the heap, and thus are subject
 	// to the alignment rules of operator new / malloc. Lua numbers (doubles)
-	// can store all possible integers up to 2^53. We can store pointers that
-	// use more than 53 bits if their alignment is guaranteed to be more than 1.
-	// For example an alignment requirement of 8 means we can shift the
-	// pointer's bits by 3.
-	const size_t minalign = LOVE_ALIGNOF(std::max_align_t);
-	uintptr_t key = (uintptr_t) object;
+	// can store up to 63 bits of information as long as the exponent is
+	// guaranteed to not be all 0's (denormal) nor all 1's (infinity, NaN).
+	// We need all these conditions for using doubles to store pointers:
+	//  - Min pointer alignment is 2.
+	//  - lua_Number is an IEC-559 double
+	//  - Doubles and 64-bit integers are the same size and endianess
+	//  - Pointers fit in 64 bits
+	// We map key bits from input pointer as follows:
+	//   63 <- 63 (sign)
+	//   62 <- !62 (exponent highest bit)
+	//   61 <- 62 (exponent second highest bit)
+	//   60 <- 61
+	//   etc.
+	//   0 <- 1
+	// Since bits 61 and 62 are always opposite, the exponent can't be all 1's
+	// or all 0's, thus avoiding special numbers like denormals and NaNs and
+	// making the floats safe.
+	const size_t minalign = 2;
+	static_assert(LOVE_ALIGNOF(std::max_align_t) >= minalign);
+	static_assert(std::numeric_limits<lua_Number>::is_iec559);
+	static_assert(sizeof(lua_Number) == sizeof(uint64_t));
+	static_assert(sizeof(uint64_t) >= sizeof(uintptr_t));
 
+	uint64_t key = (uint64_t)object;
 	if ((key & (minalign - 1)) != 0)
 	{
 		luaL_error(L, "Cannot push love object to Lua: unexpected alignment "
 				   "(pointer is %p but alignment should be %d)", object, minalign);
 	}
 
-	static const size_t shift = (size_t) log2(LOVE_ALIGNOF(std::max_align_t));
-
-	key >>= shift;
-
-	// Make sure our key isn't larger than 2^53.
-	if (key > 0x20000000000000ULL)
-		luaL_error(L, "Cannot push love object to Lua: pointer value %p is too large", object);
-
-	return (lua_Number) key;
+	key = (key & 0xC000000000000000ULL) ^ 0x4000000000000000ULL;
+	key |= ((uint64_t)object >> 1) & 0x3FFFFFFFFFFFFFFFULL;
+	lua_Number fkey;
+	memcpy(&fkey, &key, sizeof(fkey));
+	return fkey;
 }
 
 static int w__release(lua_State *L)
