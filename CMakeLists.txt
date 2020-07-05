@@ -1764,7 +1764,7 @@ endif()
 set_target_properties(${LOVE_LIB_NAME} PROPERTIES LINK_FLAGS "-s USE_PTHREADS")
 
 # very hacky TODO remove
-add_definitions("-s USE_PTHREADS")
+add_definitions("-s USE_PTHREADS -s USE_SDL=2")
 
 #
 # love (executable)
@@ -1774,6 +1774,7 @@ if(EMSCRIPTEN)
 	set(EMSCRIPTEN_ARGS	
 		"-s CASE_INSENSITIVE_FS=1" # I think this is probably what most users expect (sorry linuxers)	
 		"--post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts/EmscriptenPersistence.js"	
+		"-s USE_SDL=2"
 		"-s USE_PTHREADS=1"
 		"-s PTHREAD_POOL_SIZE=2"	
 		"-s MODULARIZE=1"	
