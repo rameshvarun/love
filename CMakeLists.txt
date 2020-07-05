@@ -1761,15 +1761,12 @@ if(MSVC)
 	set_target_properties(${LOVE_LIB_NAME} PROPERTIES RELEASE_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
 	set_target_properties(${LOVE_LIB_NAME} PROPERTIES DEBUG_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
 endif()
-set_target_properties(${LOVE_LIB_NAME} PROPERTIES LINK_FLAGS "-s USE_PTHREADS")
-
-# very hacky TODO remove
-add_definitions("-s USE_PTHREADS -s USE_SDL=2")
 
 #
 # love (executable)
 #
-if(EMSCRIPTEN)	
+if(EMSCRIPTEN)
+	add_definitions("-s USE_PTHREADS -s USE_SDL=2")
 	add_executable(${LOVE_EXE_NAME} src/love.cpp)	
 	set(EMSCRIPTEN_ARGS	
 		"-s CASE_INSENSITIVE_FS=1" # I think this is probably what most users expect (sorry linuxers)	
@@ -1785,10 +1782,8 @@ if(EMSCRIPTEN)
 		"-s ALLOW_MEMORY_GROWTH=1" # for dynamic resizing of memory, should not have a performance impact as using WASM
 		"-s FORCE_FILESYSTEM=1" # to fix Module.addDependency not existing
 		"-lidbfs.js" # to fix the ReferenceError: IDBFS is not defined
-	)	
-	set_target_properties(${LOVE_EXE_NAME} PROPERTIES LINK_FLAGS "-s USE_PTHREADS")
+	)
 	target_link_libraries(${LOVE_EXE_NAME} ${LOVE_LIB_NAME} ${EMSCRIPTEN_ARGS})	
-	# set_property(TARGET ${LOVE_EXE_NAME} PROPERTY SUFFIX ".html")
 else()
 	add_executable(${LOVE_EXE_NAME} WIN32 src/love.cpp ${LOVE_RC})
 	target_link_libraries(${LOVE_EXE_NAME} ${LOVE_LIB_NAME})
