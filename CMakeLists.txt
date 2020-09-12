@@ -50,6 +50,7 @@ endif()
 
 option(LOVE_JIT "Use LuaJIT" TRUE)
 option(LOVE_MPG123 "Use mpg123" TRUE)
+option(LOVEJS_COMPAT "Make compatability version of love.js (ie without pthreads)")
 
 if(LOVE_JIT)
 	if(APPLE)
@@ -1772,13 +1773,16 @@ endif()
 # love (executable)
 #
 if(EMSCRIPTEN)
-	add_definitions("-s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=8 -s USE_SDL=2 -s FULL_ES2=1 -s INVOKE_RUN=0 --post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts/EmscriptenPersistence.js")
+	if(LOVEJS_COMPAT)
+		add_definitions("-s USE_SDL=2 -s FULL_ES2=1 -s INVOKE_RUN=0 --post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts/EmscriptenPersistence.js")
+	else()
+		add_definitions("-s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=8 -s USE_SDL=2 -s FULL_ES2=1 -s INVOKE_RUN=0 --post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts/EmscriptenPersistence.js")
+	endif()
+
 	add_executable(${LOVE_EXE_NAME} src/love.cpp)	
 	set(EMSCRIPTEN_ARGS	
 		"-s CASE_INSENSITIVE_FS=1" # I think this is probably what most users expect (sorry linuxers)	
 		"--post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts/EmscriptenPersistence.js"	
-		"-s USE_PTHREADS=1"
-		"-s PTHREAD_POOL_SIZE=8"	
 		"-s USE_SDL=2"
 		"-s MODULARIZE=1"	
 		"-s EXPORT_NAME=\"'Love'\""	
@@ -1789,6 +1793,15 @@ if(EMSCRIPTEN)
 		"-s FORCE_FILESYSTEM=1" # to fix Module.addDependency not existing
 		"-lidbfs.js" # to fix the ReferenceError: IDBFS is not defined
 	)
+
+	if(NOT LOVEJS_COMPAT)
+		set(EMSCRIPTEN_ARGS
+			${EMSCRIPTEN_ARGS}
+			"-s USE_PTHREADS=1"
+			"-s PTHREAD_POOL_SIZE=8"	
+		)
+	endif()
+
 	target_link_libraries(${LOVE_EXE_NAME} ${LOVE_LIB_NAME} ${EMSCRIPTEN_ARGS})	
 else()
 	add_executable(${LOVE_EXE_NAME} WIN32 src/love.cpp ${LOVE_RC})
