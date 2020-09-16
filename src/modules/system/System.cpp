@@ -124,7 +124,7 @@ bool System::openURL(const std::string &url) const
 
 #elif defined(LOVE_EMSCRIPTEN)
 	EM_ASM_INT({
-		window.open(Module['Pointer_stringify']($0));
+		window.open(UTF8ToString ($0));
 		return 0;
 	}, url.c_str());
 	return true;
