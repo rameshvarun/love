@@ -23,6 +23,10 @@
 
 #include <iostream>
 
+#if LOVE_EMSCRIPTEN
+#include <emscripten.h>
+#endif 
+
 namespace love
 {
 
@@ -57,6 +61,13 @@ Exception::Exception(const char *fmt, ...)
 		delete[] buffer;
 	}
 	message = std::string(buffer);
+
+	#if LOVE_EMSCRIPTEN
+		// TODO: replace with a nice console.error call (ie figure out how to pass multi-line string to it properly)
+		std::cout << message;
+		emscripten_run_script("alert('An error occurred before the game window could be initialised. Please check the console!')");
+	#endif
+
 	delete[] buffer;
 }
 
