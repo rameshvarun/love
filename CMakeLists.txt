@@ -1773,6 +1773,7 @@ endif()
 # love (executable)
 #
 if(EMSCRIPTEN)
+    # add_definitions is for other libraries
 	if(LOVEJS_COMPAT)
 		add_definitions("-s USE_SDL=2 -s FULL_ES2=1 -s INVOKE_RUN=0 --post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts/EmscriptenPersistence.js")
 	else()
@@ -1792,6 +1793,7 @@ if(EMSCRIPTEN)
 		"-s ALLOW_MEMORY_GROWTH=1" # for dynamic resizing of memory, should not have a performance impact as using WASM
 		"-s FORCE_FILESYSTEM=1" # to fix Module.addDependency not existing
 		"-lidbfs.js" # to fix the ReferenceError: IDBFS is not defined
+        "-lwebsocket.js" # websocket API
 	)
 
 	if(NOT LOVEJS_COMPAT)
