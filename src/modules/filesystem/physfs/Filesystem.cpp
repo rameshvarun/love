@@ -555,7 +555,7 @@ std::string Filesystem::getRealDirectory(const char *filename) const
 	const char *dir = PHYSFS_getRealDir(filename);
 
 	if (dir == nullptr)
-		throw love::Exception("File does not exist on disk.");
+		throw love::Exception("File %s does not exist on disk.", filename);
 
 	return std::string(dir);
 }

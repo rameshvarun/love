@@ -64,7 +64,7 @@ Exception::Exception(const char *fmt, ...)
 
 	#if LOVE_EMSCRIPTEN
 		// TODO: replace with a nice console.error call (ie figure out how to pass multi-line string to it properly)
-		std::cout << message;
+		std::cout << message << std::endl;
 		emscripten_run_script("alert('An error occurred before the game window could be initialised. Please check the console!')");
 	#endif
 
