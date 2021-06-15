@@ -1,5 +1,5 @@
 /**
- * Created by Martin Braun (modiX) for love2d (copied and modified from AdMob port by bio1712)
+ * Created by Martin Braun (modiX) for love2d
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -24,6 +24,9 @@
 // SDL
 #include <SDL_clipboard.h>
 #include <SDL_cpuinfo.h>
+
+// RICH
+#include "common/richutil.h"
 
 namespace love
 {

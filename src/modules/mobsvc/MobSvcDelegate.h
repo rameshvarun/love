@@ -18,21 +18,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
  **/
 
-#ifndef LOVE_WRAP_MOBSVC_H
-#define LOVE_WRAP_MOBSVC_H
+#ifndef LOVE_MOBSVC_DELEGATE_H
+#define LOVE_MOBSVC_DELEGATE_H
 
-// LOVE
-#include "MobSvc.h"
-#include "common/runtime.h"
+#import <UIKit/UIKit.h>
+#import <GameKit/GameKit.h>
 
-namespace love
-{
-	namespace mobsvc
-	{
-		
-		extern "C" LOVE_EXPORT int luaopen_love_mobsvc(lua_State *L);
-		
-	} // mobsvc
-} // love
+@interface MobSvcDelegate : UIResponder <GKGameCenterControllerDelegate>
 
-#endif // LOVE_WRAP_MSVC_H
+- (void)gameCenterViewControllerDidFinish:(nonnull GKGameCenterViewController *)gameCenterViewController;
+
+@end
+
+
+#endif // LOVE_MOBSVC_DELEGATE_H

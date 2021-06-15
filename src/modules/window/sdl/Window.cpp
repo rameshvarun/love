@@ -1168,6 +1168,11 @@ const void *Window::getHandle() const
 	return window;
 }
 
+SDL_Window *Window::getWindowObj() const
+{
+	return window;
+}
+
 SDL_MessageBoxFlags Window::convertMessageBoxType(MessageBoxType type) const
 {
 	switch (type)

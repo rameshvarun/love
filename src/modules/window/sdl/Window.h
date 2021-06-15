@@ -120,6 +120,8 @@ public:
 
 	const void *getHandle() const override;
 
+	SDL_Window *getWindowObj() const;
+
 	bool showMessageBox(const std::string &title, const std::string &message, MessageBoxType type, bool attachtowindow) override;
 	int showMessageBox(const MessageBoxData &data) override;
 

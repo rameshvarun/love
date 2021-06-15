@@ -54,6 +54,11 @@
 		217DFC101D9F6D490055D849 /* url.lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 217DFBD41D9F6D490055D849 /* url.lua.h */; };
 		217DFC111D9F6D490055D849 /* usocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 217DFBD51D9F6D490055D849 /* usocket.c */; };
 		217DFC121D9F6D490055D849 /* usocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 217DFBD61D9F6D490055D849 /* usocket.h */; };
+		249587C42678E5B6002CCAB1 /* richutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 249587C22678E5B6002CCAB1 /* richutil.cpp */; };
+		24A026EE2678DC0000FB65BB /* wrap_MobSvc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24A026E62678DC0000FB65BB /* wrap_MobSvc.mm */; };
+		24A026EF2678DC0000FB65BB /* MobSvc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24A026EA2678DC0000FB65BB /* MobSvc.mm */; };
+		24A026F02678DC0000FB65BB /* MobSvcDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 24A026EB2678DC0000FB65BB /* MobSvcDelegate.m */; };
+		24A026F42678DC1B00FB65BB /* MobSvc.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24A026F22678DC1B00FB65BB /* MobSvc.mm */; };
 		FA0A3A5F23366CE9001C269E /* floattypes.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0A3A5D23366CE9001C269E /* floattypes.h */; };
 		FA0A3A6023366CE9001C269E /* floattypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0A3A5E23366CE9001C269E /* floattypes.cpp */; };
 		FA0A3A6123366CE9001C269E /* floattypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0A3A5E23366CE9001C269E /* floattypes.cpp */; };
@@ -1267,6 +1272,17 @@
 		217DFBD41D9F6D490055D849 /* url.lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.lua.h; sourceTree = "<group>"; };
 		217DFBD51D9F6D490055D849 /* usocket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = usocket.c; sourceTree = "<group>"; };
 		217DFBD61D9F6D490055D849 /* usocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = usocket.h; sourceTree = "<group>"; };
+		249587C22678E5B6002CCAB1 /* richutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = richutil.cpp; sourceTree = "<group>"; };
+		249587C32678E5B6002CCAB1 /* richutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = richutil.h; sourceTree = "<group>"; };
+		24A026E62678DC0000FB65BB /* wrap_MobSvc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = wrap_MobSvc.mm; sourceTree = "<group>"; };
+		24A026E72678DC0000FB65BB /* MobSvc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobSvc.h; sourceTree = "<group>"; };
+		24A026E82678DC0000FB65BB /* MobSvcDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobSvcDelegate.h; sourceTree = "<group>"; };
+		24A026E92678DC0000FB65BB /* wrap_MobSvc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wrap_MobSvc.h; sourceTree = "<group>"; };
+		24A026EA2678DC0000FB65BB /* MobSvc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MobSvc.mm; sourceTree = "<group>"; };
+		24A026EB2678DC0000FB65BB /* MobSvcDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobSvcDelegate.m; sourceTree = "<group>"; };
+		24A026EC2678DC0000FB65BB /* config_MobSvc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config_MobSvc.h; sourceTree = "<group>"; };
+		24A026F22678DC1B00FB65BB /* MobSvc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MobSvc.mm; sourceTree = "<group>"; };
+		24A026F32678DC1B00FB65BB /* MobSvc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobSvc.h; sourceTree = "<group>"; };
 		503971A86B7167A91B670FBA /* boot.lua.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boot.lua.h; sourceTree = "<group>"; };
 		FA08F5AE16C7525600F007B5 /* liblove-macosx.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "liblove-macosx.plist"; path = "macosx/liblove-macosx.plist"; sourceTree = "<group>"; };
 		FA0A3A5D23366CE9001C269E /* floattypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floattypes.h; sourceTree = "<group>"; };
@@ -2088,6 +2104,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		24A026E52678DBE500FB65BB /* mobsvc */ = {
+			isa = PBXGroup;
+			children = (
+				24A026F12678DC1B00FB65BB /* sdl */,
+				24A026EC2678DC0000FB65BB /* config_MobSvc.h */,
+				24A026E72678DC0000FB65BB /* MobSvc.h */,
+				24A026EA2678DC0000FB65BB /* MobSvc.mm */,
+				24A026E82678DC0000FB65BB /* MobSvcDelegate.h */,
+				24A026EB2678DC0000FB65BB /* MobSvcDelegate.m */,
+				24A026E92678DC0000FB65BB /* wrap_MobSvc.h */,
+				24A026E62678DC0000FB65BB /* wrap_MobSvc.mm */,
+			);
+			path = mobsvc;
+			sourceTree = "<group>";
+		};
+		24A026F12678DC1B00FB65BB /* sdl */ = {
+			isa = PBXGroup;
+			children = (
+				24A026F22678DC1B00FB65BB /* MobSvc.mm */,
+				24A026F32678DC1B00FB65BB /* MobSvc.h */,
+			);
+			path = sdl;
+			sourceTree = "<group>";
+		};
 		2F654C0235EB60C744A22507 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -2137,6 +2177,8 @@
 		FA0B78F61A958E3B000E1D17 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				249587C22678E5B6002CCAB1 /* richutil.cpp */,
+				249587C32678E5B6002CCAB1 /* richutil.h */,
 				FAA3A9AC1B7D465A00CED060 /* android.cpp */,
 				FAA3A9AD1B7D465A00CED060 /* android.h */,
 				FA0B78F71A958E3B000E1D17 /* b64.cpp */,
@@ -2584,6 +2626,7 @@
 		FA0B7B3C1A95902C000E1D17 /* modules */ = {
 			isa = PBXGroup;
 			children = (
+				24A026E52678DBE500FB65BB /* mobsvc */,
 				FA0B7B3D1A95902C000E1D17 /* audio */,
 				FACA02DF1F5E396B0084B28F /* data */,
 				FA0B7B521A95902C000E1D17 /* event */,
@@ -4269,12 +4312,14 @@
 				FA4B66CA1ABBCF1900558F15 /* Timer.cpp in Sources */,
 				FA0B7A3F1A958EA3000E1D17 /* b2ChainShape.cpp in Sources */,
 				FA0B7E921A95902C000E1D17 /* ModPlugDecoder.cpp in Sources */,
+				249587C42678E5B6002CCAB1 /* richutil.cpp in Sources */,
 				FA0B7E521A95902C000E1D17 /* wrap_FrictionJoint.cpp in Sources */,
 				FADF54351E3DAE6E00012CC0 /* wrap_SpriteBatch.cpp in Sources */,
 				FA4F2BB51DE1E4C300CA37D7 /* wrap_RecordingDevice.cpp in Sources */,
 				FA0B7A311A958EA3000E1D17 /* b2CollidePolygon.cpp in Sources */,
 				FA4F2C111DE936FE00CA37D7 /* unix.c in Sources */,
 				FA1BA0A31E16D97500AA2803 /* wrap_Font.cpp in Sources */,
+				24A026EE2678DC0000FB65BB /* wrap_MobSvc.mm in Sources */,
 				FA0B7A931A958EA3000E1D17 /* b2GearJoint.cpp in Sources */,
 				FA0B7E0D1A95902C000E1D17 /* Fixture.cpp in Sources */,
 				FADF53FE1E3D74F200012CC0 /* Text.cpp in Sources */,
@@ -4367,6 +4412,7 @@
 				FAA3A9AF1B7D465A00CED060 /* android.cpp in Sources */,
 				FAE64A812071363100BC7981 /* physfs_archiver_dir.c in Sources */,
 				FA0B7CD11A95902C000E1D17 /* Audio.cpp in Sources */,
+				24A026F42678DC1B00FB65BB /* MobSvc.mm in Sources */,
 				FA4F2B7B1DE0181B00CA37D7 /* xxhash.c in Sources */,
 				FA0B7D131A95902C000E1D17 /* Font.cpp in Sources */,
 				FA0B7EC91A95902C000E1D17 /* threads.cpp in Sources */,
@@ -4388,6 +4434,7 @@
 				FA0B7AD01A958EA3000E1D17 /* peer.c in Sources */,
 				FA27B3C11B4985BF008A9DCE /* wrap_VideoStream.cpp in Sources */,
 				FADF54211E3DA52C00012CC0 /* wrap_ParticleSystem.cpp in Sources */,
+				24A026F02678DC0000FB65BB /* MobSvcDelegate.m in Sources */,
 				FA0B791C1A958E3B000E1D17 /* b64.cpp in Sources */,
 				FA1E88851DF363E100E808AA /* Filter.cpp in Sources */,
 				FA0B7DA01A95902C000E1D17 /* KTXHandler.cpp in Sources */,
@@ -4529,6 +4576,7 @@
 				FA0B7AA51A958EA3000E1D17 /* b2RevoluteJoint.cpp in Sources */,
 				FA0B7EA11A95902C000E1D17 /* Sound.cpp in Sources */,
 				FA0B7DE61A95902C000E1D17 /* Cursor.cpp in Sources */,
+				24A026EF2678DC0000FB65BB /* MobSvc.mm in Sources */,
 				FA6A2B711F5F845F0074C308 /* wrap_DataView.cpp in Sources */,
 				FA0B7EDC1A95902D000E1D17 /* Touch.cpp in Sources */,
 				FA0B7CE91A95902C000E1D17 /* Event.cpp in Sources */,
@@ -5105,6 +5153,7 @@
 					ios/include/SDL2,
 					ios/include/modplug,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ios/libraries/freetype",
@@ -5146,6 +5195,7 @@
 					ios/include/SDL2,
 					ios/include/modplug,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ios/libraries/freetype",
@@ -5188,6 +5238,7 @@
 					ios/include/SDL2,
 					ios/include/modplug,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ios/libraries/freetype",
