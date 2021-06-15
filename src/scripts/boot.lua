@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2006-2020 LOVE Development Team
+Copyright (c) 2006-2021 LOVE Development Team
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -422,6 +422,7 @@ function love.init()
 			thread = true,
 			window = true,
 			video = true,
+			mobsvc = true,
 		},
 		audio = {
 			mixwithsystem = true, -- Only relevant for Android / iOS.
@@ -500,6 +501,7 @@ function love.init()
 		"graphics",
 		"math",
 		"physics",
+		"mobsvc",
 	} do
 		if c.modules[v] then
 			require("love." .. v)
@@ -673,7 +675,7 @@ function love.errhand(msg)
 	love.graphics.reset()
 	local font = love.graphics.setNewFont(14)
 
-	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setColor(1, 1, 1)
 
 	local trace = debug.traceback()
 

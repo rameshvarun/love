@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -157,7 +157,8 @@
 #	define LOVE_ENABLE_TOUCH
 #	define LOVE_ENABLE_VIDEO
 #	define LOVE_ENABLE_WINDOW
-
+#	define LOVE_ENABLE_MOBSVC
+#	define LOVE_ENABLE_MOBSVC_SDL
 #	define LOVE_ENABLE_ENET
 #	define LOVE_ENABLE_LUASOCKET
 #	define LOVE_ENABLE_LUA53

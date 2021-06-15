@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -499,7 +499,7 @@ love::graphics::StreamBuffer *CreateStreamBuffer(BufferType mode, size_t size)
 		{
 			// AMD's pinned memory seems to be faster than persistent mapping,
 			// on AMD GPUs.
-			if (GLAD_AMD_pinned_memory)
+			if (GLAD_AMD_pinned_memory && gl.getVendor() == OpenGL::VENDOR_AMD)
 			{
 				try
 				{

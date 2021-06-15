@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -124,6 +124,20 @@ bool OpenGL::initContext()
 	if (!gladLoadGLLoader(LOVEGetProcAddress))
 		return false;
 
+	initVendor();
+
+	bugs = {};
+
+	if (GLAD_ES_VERSION_3_0 && !GLAD_ES_VERSION_3_1)
+	{
+		const char *device = (const char *) glGetString(GL_RENDERER);
+		if (getVendor() == VENDOR_VIVANTE && strstr(device, "Vivante GC7000UL"))
+			bugs.brokenGLES3 = true;
+	}
+
+	if (bugs.brokenGLES3)
+		GLAD_ES_VERSION_3_0 = false;
+
 	if (GLAD_VERSION_3_2)
 	{
 		GLint profileMask = 0;
@@ -134,9 +148,6 @@ bool OpenGL::initContext()
 		coreProfile = false;
 
 	initOpenGLFunctions();
-	initVendor();
-
-	bugs = {};
 
 #if defined(LOVE_WINDOWS) || defined(LOVE_LINUX)
 	// See the comments in OpenGL.h.
@@ -155,16 +166,26 @@ bool OpenGL::initContext()
 		if (strstr(device, "HD Graphics 4000") || strstr(device, "HD Graphics 2500"))
 			bugs.clientWaitSyncStalls = true;
 	}
+
+	if (getVendor() == VENDOR_INTEL)
+	{
+		const char *device = (const char *) glGetString(GL_RENDERER);
+		if (strstr(device, "HD Graphics 3000") || strstr(device, "HD Graphics 2000")
+			|| !strcmp(device, "Intel(R) HD Graphics") || !strcmp(device, "Intel(R) HD Graphics Family"))
+		{
+			bugs.brokenSRGB = true;
+		}
+	}
 #endif
 
 #ifdef LOVE_WINDOWS
 	if (getVendor() == VENDOR_AMD)
 	{
-		// Radeon HD drivers switched from "ATI Radeon" to "AMD Radeon" around
+		// Radeon drivers switched from "ATI Radeon" to "AMD Radeon" around
 		// the 7000 series. We'll assume this bug doesn't affect those newer
 		// GPUs / drivers.
 		const char *device = (const char *) glGetString(GL_RENDERER);
-		if (strstr(device, "ATI Radeon HD ") || strstr(device, "ATI Mobility Radeon HD"))
+		if (strstr(device, "ATI Radeon") || strstr(device, "ATI Mobility Radeon"))
 			bugs.texStorageBreaksSubImage = true;
 	}
 #endif
@@ -215,8 +236,8 @@ void OpenGL::setupContext()
 	setEnableState(ENABLE_SCISSOR_TEST, state.enableState[ENABLE_SCISSOR_TEST]);
 	setEnableState(ENABLE_FACE_CULL, state.enableState[ENABLE_FACE_CULL]);
 
-	if (GLAD_VERSION_3_0 || GLAD_ARB_framebuffer_sRGB || GLAD_EXT_framebuffer_sRGB
-		|| GLAD_EXT_sRGB_write_control)
+	if (!bugs.brokenSRGB && (GLAD_VERSION_3_0 || GLAD_ARB_framebuffer_sRGB
+		|| GLAD_EXT_framebuffer_sRGB || GLAD_EXT_sRGB_write_control))
 	{
 		setEnableState(ENABLE_FRAMEBUFFER_SRGB, state.enableState[ENABLE_FRAMEBUFFER_SRGB]);
 	}
@@ -391,15 +412,23 @@ void OpenGL::initOpenGLFunctions()
 		}
 	}
 
-	if (GLAD_ES_VERSION_2_0 && GLAD_OES_texture_3D && !GLAD_ES_VERSION_3_0)
+	if (GLAD_ES_VERSION_2_0 && !GLAD_ES_VERSION_3_0)
 	{
-		// Function signatures don't match, we'll have to conditionally call it
-		//fp_glTexImage3D = fp_glTexImage3DOES;
-		fp_glTexSubImage3D = fp_glTexSubImage3DOES;
-		fp_glCopyTexSubImage3D = fp_glCopyTexSubImage3DOES;
-		fp_glCompressedTexImage3D = fp_glCompressedTexImage3DOES;
-		fp_glCompressedTexSubImage3D = fp_glCompressedTexSubImage3DOES;
-		fp_glFramebufferTexture3D = fp_glFramebufferTexture3DOES;
+		// The Nvidia Tegra 3 driver (used by Ouya) claims to support GL_EXT_texture_array but
+		// segfaults if you actually try to use it. OpenGL ES 2.0 devices should use OES_texture_3D.
+		// GL_EXT_texture_array is for desktops.
+		GLAD_EXT_texture_array = false;
+
+		if (GLAD_OES_texture_3D)
+		{
+			// Function signatures don't match, we'll have to conditionally call it
+			//fp_glTexImage3D = fp_glTexImage3DOES;
+			fp_glTexSubImage3D = fp_glTexSubImage3DOES;
+			fp_glCopyTexSubImage3D = fp_glCopyTexSubImage3DOES;
+			fp_glCompressedTexImage3D = fp_glCompressedTexImage3DOES;
+			fp_glCompressedTexSubImage3D = fp_glCompressedTexSubImage3DOES;
+			fp_glFramebufferTexture3D = fp_glFramebufferTexture3DOES;
+		}
 	}
 
 	if (!GLAD_VERSION_3_2 && !GLAD_ES_VERSION_3_2 && !GLAD_ARB_draw_elements_base_vertex)
@@ -1709,6 +1738,8 @@ bool OpenGL::isPixelFormatSupported(PixelFormat pixelformat, bool rendertarget, 
 		else
 			return true;
 	case PIXELFORMAT_sRGBA8:
+		if (gl.bugs.brokenSRGB)
+			return false;
 		if (rendertarget)
 		{
 			if (GLAD_VERSION_1_0)

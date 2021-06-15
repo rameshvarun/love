@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -68,6 +68,9 @@ Canvas::Canvas(const Settings &settings)
 		mipmapCount = getTotalMipmapCount(pixelWidth, pixelHeight, depth);
 		filter.mipmap = defaultMipmapFilter;
 	}
+
+	if (settings.mipmaps == MIPMAPS_AUTO && isPixelFormatDepthStencil(format))
+		throw love::Exception("Automatic mipmap generation cannot be used for depth/stencil Canvases.");
 
 	auto gfx = Module::getInstance<Graphics>(Module::M_GRAPHICS);
 	const Graphics::Capabilities &caps = gfx->getCapabilities();

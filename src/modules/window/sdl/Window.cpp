@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -440,8 +440,16 @@ bool Window::setWindow(int width, int height, WindowSettings *settings)
 
 	Uint32 sdlflags = SDL_WINDOW_OPENGL;
 
-	// On Android we always must have fullscreen type FULLSCREEN_TYPE_DESKTOP
+	// On Android, disable fullscreen first on window creation so it's
+	// possible to change the orientation by specifying portait width and
+	// height, otherwise SDL will pick the current orientation dimensions when
+	// fullscreen flag is set. Don't worry, we'll set it back later when user
+	// also requested fullscreen after the window is created.
+	// See https://github.com/love2d/love-android/issues/196
 #ifdef LOVE_ANDROID
+	bool fullscreen = f.fullscreen;
+
+	f.fullscreen = false;
 	f.fstype = FULLSCREEN_DESKTOP;
 #endif
 
@@ -481,7 +489,7 @@ bool Window::setWindow(int width, int height, WindowSettings *settings)
 	int x = f.x;
 	int y = f.y;
 
-	if (f.useposition && !f.fullscreen)
+	if (f.useposition)
 	{
 		// The position needs to be in the global coordinate space.
 		SDL_Rect displaybounds = {};
@@ -511,7 +519,7 @@ bool Window::setWindow(int width, int height, WindowSettings *settings)
 	// Enforce minimum window dimensions.
 	SDL_SetWindowMinimumSize(window, f.minwidth, f.minheight);
 
-	if ((f.useposition || f.centered) && !f.fullscreen)
+	if (f.useposition || f.centered)
 		SDL_SetWindowPosition(window, x, y);
 
 	SDL_RaiseWindow(window);
@@ -527,8 +535,11 @@ bool Window::setWindow(int width, int height, WindowSettings *settings)
 		graphics->setMode((int) scaledw, (int) scaledh, pixelWidth, pixelHeight, f.stencil);
 	}
 
+	// Set fullscreen when user requested it before.
+	// See above for explanation.
 #ifdef LOVE_ANDROID
-	love::android::setImmersive(f.fullscreen);
+	setFullscreen(fullscreen);
+	love::android::setImmersive(fullscreen);
 #endif
 
 	return true;

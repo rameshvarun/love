@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -140,6 +140,10 @@ extern "C"
 #if defined(LOVE_ENABLE_WINDOW)
 	extern int luaopen_love_window(lua_State*);
 #endif
+#if defined(LOVE_ENABLE_MOBSVC)
+	extern int luaopen_love_mobsvc(lua_State*);
+#endif
+
 	extern int luaopen_love_nogame(lua_State*);
 	extern int luaopen_love_boot(lua_State*);
 }
@@ -201,6 +205,9 @@ static const luaL_Reg modules[] = {
 #endif
 #if defined(LOVE_ENABLE_WINDOW)
 	{ "love.window", luaopen_love_window },
+#endif
+#if defined(LOVE_ENABLE_MOBSVC)
+	{ "love.mobsvc", luaopen_love_mobsvc },
 #endif
 	{ "love.nogame", luaopen_love_nogame },
 	{ "love.boot", luaopen_love_boot },
@@ -362,6 +369,23 @@ static int w_deprecation__gc(lua_State *)
 	return 0;
 }
 
+static void luax_addcompatibilityalias(lua_State *L, const char *module, const char *name, const char *alias)
+{
+	lua_getglobal(L, module);
+	if (lua_istable(L, -1))
+	{
+		lua_getfield(L, -1, alias);
+		bool hasalias = !lua_isnoneornil(L, -1);
+		lua_pop(L, 1);
+		if (!hasalias)
+		{
+			lua_getfield(L, -1, name);
+			lua_setfield(L, -2, alias);
+		}
+	}
+	lua_pop(L, 1);
+}
+
 int luaopen_love(lua_State *L)
 {
 	love::luax_insistpinnedthread(L);
@@ -468,6 +492,13 @@ int luaopen_love(lua_State *L)
 	// Necessary for Data-creating methods to work properly in Data subclasses.
 	love::luax_require(L, "love.data");
 	lua_pop(L, 1);
+
+#if LUA_VERSION_NUM <= 501
+	// These are deprecated in Lua 5.1. LuaJIT 2.1 removes them, but code
+	// written assuming LuaJIT 2.0 or Lua 5.1 is used might still rely on them.
+	luax_addcompatibilityalias(L, "math", "fmod", "mod");
+	luax_addcompatibilityalias(L, "string", "gmatch", "gfind");
+#endif
 
 #ifdef LOVE_ENABLE_LUASOCKET
 	love::luasocket::__open(L);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -121,9 +121,6 @@ void Text::addTextData(const TextData &t)
 		draw_commands.clear();
 		text_data.clear();
 	}
-
-	if (vertices.empty())
-		return;
 
 	if (t.use_matrix)
 		t.matrix.transformXY(&vertices[0], &vertices[0], (int) vertices.size());

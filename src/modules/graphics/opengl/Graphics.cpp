@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006-2020 LOVE Development Team
+ * Copyright (c) 2006-2021 LOVE Development Team
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -198,8 +198,8 @@ bool Graphics::setMode(int width, int height, int pixelwidth, int pixelheight, b
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	// Set whether drawing converts input from linear -> sRGB colorspace.
-	if (GLAD_VERSION_3_0 || GLAD_ARB_framebuffer_sRGB || GLAD_EXT_framebuffer_sRGB
-		|| GLAD_ES_VERSION_3_0 || GLAD_EXT_sRGB)
+	if (!gl.bugs.brokenSRGB && (GLAD_VERSION_3_0 || GLAD_ARB_framebuffer_sRGB
+		|| GLAD_EXT_framebuffer_sRGB || GLAD_ES_VERSION_3_0 || GLAD_EXT_sRGB))
 	{
 		if (GLAD_VERSION_1_0 || GLAD_EXT_sRGB_write_control)
 			gl.setEnableState(OpenGL::ENABLE_FRAMEBUFFER_SRGB, isGammaCorrect());
@@ -587,10 +587,6 @@ void Graphics::endPass()
 		if (rt.canvas->getMipmapMode() == Canvas::MIPMAPS_AUTO && rt.mipmap == 0)
 			rt.canvas->generateMipmaps();
 	}
-
-	int dsmipmap = rts.depthStencil.mipmap;
-	if (depthstencil != nullptr && depthstencil->getMipmapMode() == Canvas::MIPMAPS_AUTO && dsmipmap == 0)
-		depthstencil->generateMipmaps();
 }
 
 void Graphics::clear(OptionalColorf c, OptionalInt stencil, OptionalDouble depth)
