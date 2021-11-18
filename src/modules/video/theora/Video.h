@@ -51,6 +51,8 @@ public:
 
 	VideoStream *newVideoStream(love::filesystem::File* file);
 
+	void update();
+
 private:
 	Worker *workerThread;
 }; // Video
@@ -67,6 +69,8 @@ public:
 	void addStream(TheoraVideoStream *stream);
 	// Frees itself!
 	void stop();
+
+	void update();
 
 private:
 

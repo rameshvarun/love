@@ -31,6 +31,7 @@
 #include "common/Exception.h"
 #include "audio/Audio.h"
 #include "audio/openal/Audio.h"
+#include "video/theora/Video.h"
 #include "common/config.h"
 #include "timer/Timer.h"
 
@@ -132,6 +133,7 @@ void Event::pump()
 	}
 
 	Module::getInstance<love::audio::openal::Audio>(Module::M_AUDIO)->pool->update();
+	Module::getInstance<love::video::theora::Video>(Module::M_VIDEO)->update();
 }
 
 Message *Event::wait()

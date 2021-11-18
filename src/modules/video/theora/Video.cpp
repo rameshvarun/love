@@ -44,6 +44,11 @@ Video::~Video()
 	delete workerThread;
 }
 
+void Video::update()
+{
+	workerThread->update();
+}
+
 VideoStream *Video::newVideoStream(love::filesystem::File *file)
 {
 	TheoraVideoStream *stream = new TheoraVideoStream(file);
@@ -120,6 +125,27 @@ void Worker::threadFunction()
 
 			stream->threadedFillBackBuffer(dt);
 		}
+	}
+}
+
+void Worker::update() {
+	static double lastFrame = love::timer::Timer::getTime();
+
+	double curFrame = love::timer::Timer::getTime();
+	double dt = curFrame-lastFrame;
+	lastFrame = curFrame;
+
+	for (auto it = streams.begin(); it != streams.end(); ++it)
+	{
+		TheoraVideoStream *stream = *it;
+		if (stream->getReferenceCount() == 1)
+		{
+			// We're the only ones left
+			streams.erase(it);
+			break;
+		}
+
+		stream->threadedFillBackBuffer(dt);
 	}
 }
 
