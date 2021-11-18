@@ -213,7 +213,7 @@ void setPointSize() {
 #endif
 }]],
 
-	MAIN = [[
+DECLARATIONS = [[
 attribute vec4 VertexPosition;
 attribute vec4 VertexTexCoord;
 attribute vec4 VertexColor;
@@ -223,7 +223,9 @@ varying vec4 VaryingTexCoord;
 varying vec4 VaryingColor;
 
 vec4 position(mat4 clipSpaceFromLocal, vec4 localPosition);
+]],
 
+MAIN = [[
 void main() {
 	VaryingTexCoord = VertexTexCoord;
 	VaryingColor = gammaCorrectColor(VertexColor) * ConstantColor;
@@ -283,21 +285,20 @@ vec4 VideoTexel(vec2 texcoords) {
 	return gammaCorrectColor(color);
 }]],
 
-	MAIN = [[
+DECLARATIONS = [[
 uniform sampler2D MainTex;
 varying LOVE_HIGHP_OR_MEDIUMP vec4 VaryingTexCoord;
 varying mediump vec4 VaryingColor;
 
 vec4 effect(vec4 vcolor, Image tex, vec2 texcoord, vec2 pixcoord);
+]],
 
+	MAIN = [[
 void main() {
 	love_PixelColor = effect(VaryingColor, MainTex, VaryingTexCoord.st, love_PixelCoord);
 }]],
 
 	MAIN_CUSTOM = [[
-varying LOVE_HIGHP_OR_MEDIUMP vec4 VaryingTexCoord;
-varying mediump vec4 VaryingColor;
-
 void effect();
 
 void main() {
@@ -323,9 +324,10 @@ local function createShaderStageCode(stage, code, lang, gles, glsl1on3, gammacor
 		GLSL.UNIFORMS,
 		GLSL.FUNCTIONS,
 		GLSL[stage].FUNCTIONS,
-		custom and GLSL[stage].MAIN_CUSTOM or GLSL[stage].MAIN,
+		GLSL[stage].DECLARATIONS,
 		((lang == "glsl1" or glsl1on3) and not gles) and "#line 0" or "#line 1",
 		code,
+		custom and GLSL[stage].MAIN_CUSTOM or GLSL[stage].MAIN,
 	}
 	return table_concat(lines, "\n")
 end
@@ -361,7 +363,7 @@ function love.graphics._shaderCodeToGLSL(gles, arg1, arg2)
 			is_custompixel, is_multicanvas = isCustomPixel, isMultiCanvas
 		end
 	end
-	
+
 	if arg2 then
 		if isVertexCode(arg2) then
 			vertexcode = arg2 -- second arg contains vertex shader code
