@@ -30,6 +30,7 @@
 #include "window/Window.h"
 #include "common/Exception.h"
 #include "audio/Audio.h"
+#include "audio/openal/Audio.h"
 #include "common/config.h"
 #include "timer/Timer.h"
 
@@ -129,6 +130,8 @@ void Event::pump()
 			msg->release();
 		}
 	}
+
+	Module::getInstance<love::audio::openal::Audio>(Module::M_AUDIO)->pool->update();
 }
 
 Message *Event::wait()

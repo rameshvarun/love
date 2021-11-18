@@ -130,6 +130,9 @@ public:
 
 	bool getEffectID(const char *name, ALuint &id);
 
+	// The Pool.
+	Pool *pool;
+
 private:
 	void initializeEFX();
 	// The OpenAL device.
@@ -151,9 +154,6 @@ private:
 	std::stack<ALuint> slotlist;
 	int MAX_SCENE_EFFECTS = 64;
 	int MAX_SOURCE_EFFECTS = 64;
-
-	// The Pool.
-	Pool *pool;
 
 	class PoolThread: public thread::Threadable
 	{
