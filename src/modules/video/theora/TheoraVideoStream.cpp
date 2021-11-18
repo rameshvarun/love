@@ -218,16 +218,10 @@ void TheoraVideoStream::threadedFillBackBuffer(double dt)
 
 	// Until we are at the end of the stream, or we are displaying the right frame
 	unsigned int framesBehind = 0;
-	bool failedSeek = false;
 	while (!demuxer.isEos() && position >= nextFrame)
 	{
-		// If we can't catch up, seek
-		if (framesBehind++ > 5 && !failedSeek)
-		{
-			seekDecoder(position);
-			framesBehind = 0;
-			failedSeek = true;
-		}
+		// Cap how many frames we actually decode.
+		if (framesBehind++ > 2) break;
 
 		th_decode_ycbcr_out(decoder, bufferinfo);
 		hasFrame = true;
